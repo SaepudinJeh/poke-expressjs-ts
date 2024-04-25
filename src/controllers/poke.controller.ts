@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { PokeService } from "../services/poke.service";
 import { UtilHelper } from "../helpers/utils.helper";
+import createHttpError from "http-errors";
 
 export class PokeController {
     static async loginWithUsername(req: Request, res: Response, next: NextFunction) {
         try {
             const { username } = req.body;
-            if(!username) throw new Error("Username required!");
+            if(username?.length < 1 || !username) createHttpError.BadRequest("Username required!");
 
             const response = await PokeService.loginUsername(username);
 

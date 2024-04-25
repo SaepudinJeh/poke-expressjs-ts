@@ -10,4 +10,4 @@ router.post(`/${version_api}/catch-probability`, PokeController.catchProbability
 router.post(`/${version_api}/release-poke`, PokeController.releasePoke);
 router.post(`/${version_api}/rename-poke`, PokeController.renamePoke);
 
-router.post(`/${version_api}/login`, PokeController.loginWithUsername);
+router.post(`/${version_api}/my-deck`, PokeController.loginWithUsername);

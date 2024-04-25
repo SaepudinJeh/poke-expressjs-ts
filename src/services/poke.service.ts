@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import createHttpError from "http-errors";
 import { PokemonClient } from "pokenode-ts";
 
 const prisma = new PrismaClient();
@@ -76,25 +77,27 @@ export class PokeService {
       where: { username, pokemons: { some: { name: poke } } },
     });
 
-    if (checkMyDeck) throw new Error("Poke already saved!");
+    if (checkMyDeck) return createHttpError.BadRequest("Poke already saved!");
 
     const randomPercent = Math.random() * 100;
     const success = randomPercent >= 50;
+
+    let result: Record<string, any>
 
     if (success) {
       const pokemon = this.detailPoke(poke);
 
       if (!pokemon) throw Error("Pokemon not found!");
 
-      await prisma.myPoke.create({
-        data: {
-          userId: user?.id!,
-          name: (await pokemon).name,
-          height: (await pokemon).height,
-          weight: (await pokemon).weight,
-          img: (await pokemon).sprites?.other?.home?.front_default!,
-        },
-      });
+        result = await prisma.myPoke.create({
+          data: {
+            userId: user?.id!,
+            name: (await pokemon).name,
+            height: (await pokemon).height,
+            weight: (await pokemon).weight,
+            img: (await pokemon).sprites?.other?.home?.front_default!,
+          },
+        });
     }
 
     const percentString = randomPercent.toFixed(2) + "%";
@@ -102,6 +105,7 @@ export class PokeService {
     return {
       score: percentString,
       probability: success,
+      result: result!
     };
   }
 
