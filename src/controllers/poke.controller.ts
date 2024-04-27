@@ -1,15 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { PokeService } from "../services/poke.service";
 import { UtilHelper } from "../helpers/utils.helper";
-import createHttpError from "http-errors";
+import { ByIdRequest, ByPokeRequest, ByUsernameRequest, CreateCatchPokeRequest, CreateRenamePokeRequest } from "../models/poke.model";
 
 export class PokeController {
     static async loginWithUsername(req: Request, res: Response, next: NextFunction) {
         try {
-            const { username } = req.body;
-            if(username?.length < 1 || !username) createHttpError.BadRequest("Username required!");
+            const payload = req.body as ByUsernameRequest;
 
-            const response = await PokeService.loginUsername(username);
+            const response = await PokeService.loginUsername(payload);
 
             return res.status(200).json({
                 statusCode: 200,
@@ -24,13 +23,13 @@ export class PokeController {
 
     static async renamePoke(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id, name } = req.body;
+            const payload = req.body as CreateRenamePokeRequest;
 
-            const response = await PokeService.renamePoke({ id, name });
+            const response = await PokeService.renamePoke(payload);
 
             return res.status(200).json({
                 statusCode: 200,
-                message: 'Successfully',
+                message: '"Success updated name poke!"',
                 data: response
             })
 
@@ -55,9 +54,9 @@ export class PokeController {
 
     static async getDetailPokeController(req: Request, res: Response, next: NextFunction) {
         try {
-            const { poke } = req.params;
+            const payload = req.params as ByPokeRequest;           
 
-            const response = await PokeService.detailPoke(poke);
+            const response = await PokeService.detailPoke(payload);
 
             return res.status(200).json({
                 statusCode: 200,
@@ -71,9 +70,9 @@ export class PokeController {
 
     static async catchProbability(req: Request, res: Response, next: NextFunction) {
         try {
-            const { username, poke } = req.body
+            const payload = req.body as CreateCatchPokeRequest;
 
-            const response = await PokeService.catchProbability({ username, poke })
+            const response = await PokeService.catchProbability(payload)
             
             return res.status(200).json({
                 statusCode: 200,
@@ -89,12 +88,12 @@ export class PokeController {
 
     static async releasePoke(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.body;
+            const payload = req.body as ByIdRequest;
 
-            const generateNumber = UtilHelper.generateRangeNumber(1, 1000);
+            const generateNumber = UtilHelper.generateRangeNumber(1, 10);
             const prime = UtilHelper.checkIsPrime(generateNumber);
 
-            if(prime) await PokeService.releasePoke(Number(id))
+            if(prime) await PokeService.releasePoke(payload)
 
             return res.status(200).json({
                 statusCode: 200,

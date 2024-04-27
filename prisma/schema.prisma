@@ -26,11 +26,13 @@ model User {
 
 model MyPoke {
   id  Int @id @default(autoincrement())
-  name String
+  name String?
   weight  Int
   height  Int
   img   String
   deletedAt DateTime?
+  defaultName String?
+  renameCount  Int @default(0)
 
   user User @relation(fields: [userId], references: [id])
 

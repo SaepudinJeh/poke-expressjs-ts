@@ -4,7 +4,7 @@ import { ResponseError } from "../helpers/error_response.helper";
 
 export const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
     if(error instanceof ZodError) {
-        res.status(400).json({
+        return res.status(400).json({
             statusCode: 400,
             message: error?.errors
         })

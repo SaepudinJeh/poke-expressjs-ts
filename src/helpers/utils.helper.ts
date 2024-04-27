@@ -17,4 +17,16 @@ export class UtilHelper {
 
     return true;
   }
+
+  static fibonacci(number: number): number {
+    if (number === 0) {
+        return 0;
+    } else if (number === 1) {
+        return 1;
+    } else {
+        // rekursif
+        return this.fibonacci(number - 1) + this.fibonacci(number - 2);
+    }
+}
+
 }
